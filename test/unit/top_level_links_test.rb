@@ -47,13 +47,13 @@ class TopLevelLinksTest < MiniTest::Test
         }],
         links: {
           self: "http://example.com/articles",
-          next: "http://example.com/articles?page=2",
+          next: "http://example.com/articles?page[number]=2",
           prev: nil,
           first: "http://example.com/articles",
-          last: "http://example.com/articles?page=6"
+          last: "http://example.com/articles?page[number]=6"
         }
       }.to_json)
-    stub_request(:get, "http://example.com/articles?page=2")
+    stub_request(:get, "http://example.com/articles?page[number]=2")
       .to_return(headers: {content_type: "application/vnd.api+json"}, body: {
         data: [{
           type: "articles",
@@ -63,11 +63,11 @@ class TopLevelLinksTest < MiniTest::Test
           }
         }],
         links: {
-          self: "http://example.com/articles?page=2",
-          next: "http://example.com/articles?page=3",
+          self: "http://example.com/articles?page[number]=2",
+          next: "http://example.com/articles?page[number]=3",
           prev: "http://example.com/articles",
           first: "http://example.com/articles",
-          last: "http://example.com/articles?page=6"
+          last: "http://example.com/articles?page=[number]6"
         }
       }.to_json)
 
