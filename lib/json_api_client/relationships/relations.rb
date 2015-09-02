@@ -27,7 +27,7 @@ module JsonApiClient
       end
 
       def attributes_for_serialization
-        attributes.slice(*changed)
+        attributes
       end
 
       protected
