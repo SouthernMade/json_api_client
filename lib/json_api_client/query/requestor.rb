@@ -37,6 +37,9 @@ module JsonApiClient
       def custom(method_name, options, params)
         path = resource_path(params)
         params.delete(klass.primary_key)
+
+        method_name = options[:api_method_name] if options[:api_method_name].present?
+
         if options[:relationships].present?
           method_name = options[:relationships]
           path = File.join(path, "relationships")
