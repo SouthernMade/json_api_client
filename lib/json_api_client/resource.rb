@@ -78,7 +78,7 @@ module JsonApiClient
       #
       # @return [Connection] The connection to the json api server
       def connection(rebuild = false, &block)
-        _build_connection(&block)
+        _build_connection(rebuild, &block)
         connection_object
       end
 
@@ -267,7 +267,7 @@ module JsonApiClient
       end
       self.attributes = params.merge(self.class.default_attributes)
       self.class.schema.each_property do |property|
-        attributes[property.name] = property.default unless attributes.has_key?(property.name)
+        attributes[property.name] = property.default unless attributes.has_key?(property.name) || property.default.nil?
       end
     end
 
@@ -334,6 +334,11 @@ module JsonApiClient
       relationships.set_all_attributes_dirty if relationships
     end
 
+    def valid?(context = nil)
+      context ||= (new_record? ? :create : :update)
+      super(context)
+    end
+
     # Commit the current changes to the resource to the remote server.
     # If the resource was previously loaded from the server, we will
     # try to update the record. Otherwise if it's a new record, then
@@ -363,6 +368,7 @@ module JsonApiClient
         mark_as_persisted!
         if updated = last_result_set.first
           self.attributes = updated.attributes
+          self.relationships.attributes = updated.relationships.attributes
           clear_changes_information
         end
         true
